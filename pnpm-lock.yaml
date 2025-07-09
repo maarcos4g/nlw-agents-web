@@ -58,6 +58,9 @@ devDependencies:
   '@biomejs/biome':
     specifier: ^2.0.6
     version: 2.0.6
+  '@types/dom-speech-recognition':
+    specifier: ^0.0.6
+    version: 0.0.6
   '@types/node':
     specifier: ^24.0.10
     version: 24.0.10
@@ -1037,6 +1040,10 @@ packages:
 
   /@types/deep-eql@4.0.2:
     resolution: {integrity: sha512-c9h9dVVMigMPc4bwTvC5dxqtqJZwQPePsWjPlpSOnojbor6pGqdk541lfA7AqFQr5pB1BRdq0juY9db81BwyFw==}
+    dev: true
+
+  /@types/dom-speech-recognition@0.0.6:
+    resolution: {integrity: sha512-o7pAVq9UQPJL5RDjO1f/fcpfFHdgiMnR4PoIU2N/ZQrYOS3C5rzdOJMsrpqeBCbii2EE9mERXgqspQqPDdPahw==}
     dev: true
 
   /@types/estree@1.0.8:
