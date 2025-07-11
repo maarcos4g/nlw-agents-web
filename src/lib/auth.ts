@@ -6,3 +6,12 @@ export function signToken(token: string) {
     path: '/'
   })
 }
+
+export function getToken() {
+  const token = cookies.get('@token')
+  return { token }
+}
+
+export function signOut() {
+  cookies.remove('@token')
+}
