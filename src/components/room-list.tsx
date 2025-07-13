@@ -5,7 +5,6 @@ import { Badge } from "@/components/ui/badge"
 import { dayjs } from "@/lib/dayjs"
 import { useRooms } from "@/http/use-rooms"
 
-
 export function RoomList() {
 
   const { data, isLoading } = useRooms()
@@ -13,8 +12,8 @@ export function RoomList() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Salas recentes</CardTitle>
-        <CardDescription>Acesso rápido para as salas criadas recentemente</CardDescription>
+        <CardTitle>Minhas salas</CardTitle>
+        <CardDescription>Acesso rápido para suas salas criadas recentemente</CardDescription>
       </CardHeader>
 
       <CardContent className="flex flex-col gap-3">
@@ -23,7 +22,7 @@ export function RoomList() {
 
         {data?.map((room) => (
           <Link
-            to={`/room/${room.id}`}
+            to={`/room/${room.code}`}
             className="flex items-center justify-between p-3 rounded-lg border hover:bg-accent/50"
             key={room.id}
           >

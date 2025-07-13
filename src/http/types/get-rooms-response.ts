@@ -4,4 +4,5 @@ export type GetRoomsResponse = Array<{
   questionsCount: number
   createdAt: string
   isGeneratingAnswer?: boolean
+  code: string
 }>

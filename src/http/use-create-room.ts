@@ -2,9 +2,10 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import type { CreateRoomRequest } from "./types/create-room-request"
 import type { CreateRoomResponse } from "./types/create-room-response"
 import { env } from "@/env"
+import { getToken } from "@/lib/auth"
 
 export function useCreateRoom() {
-
+  const { token } = getToken()
   const queryClient = useQueryClient()
 
   return useMutation({
@@ -13,6 +14,7 @@ export function useCreateRoom() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(data),
       })
@@ -23,7 +25,7 @@ export function useCreateRoom() {
       return result
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({queryKey:['get-rooms']})
+      queryClient.invalidateQueries({ queryKey: ['get-rooms'] })
     }
   })
 }
