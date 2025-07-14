@@ -49,7 +49,7 @@ export function Room() {
     return (
       <Error
         title='Sala não encontrada'
-        description='O código da sala informado não existe ou ocorreu um erro ao buscar os dados.<br />
+        description='O código da sala informado não existe ou ocorreu um erro ao buscar os dados.
           Verifique o código e tente novamente.'
       />
     )

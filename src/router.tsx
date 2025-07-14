@@ -8,12 +8,14 @@ import { SignUp } from "./pages/sign-up";
 import { ConfirmOtp } from "./pages/confirm-otp";
 import { AppLayout } from "./pages/layouts/app";
 import { appLoader } from "./pages/layouts/loader";
+import { ErrorPage } from "./pages/404";
 
 export const router = createBrowserRouter([
   {
     path: '/',
     element: <AppLayout />,
     loader: appLoader,
+    errorElement: <ErrorPage />,
     children: [
       {
         path: '/',
