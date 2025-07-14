@@ -2,7 +2,9 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import type { CreateQuestionRequest } from "./types/create-question-request"
 import type { CreateQuestionResponse } from "./types/create-question-response"
 import type { GetRoomQuestionsResponse } from "./types/get-room-questions"
-import { env } from "@/env"
+import { api } from "./config/api"
+import { getToken } from "@/lib/auth"
+import type { GetProfileResponse } from "./types/get-profile-response"
 
 export function useCreateQuestion(roomId: string) {
 
@@ -10,25 +12,22 @@ export function useCreateQuestion(roomId: string) {
 
   return useMutation({
     mutationFn: async (data: CreateQuestionRequest) => {
-      const response = await fetch(`${env.VITE_API_URL}/rooms/${roomId}/questions`, {
-        method: 'POST',
+      const { token } = getToken()
+
+      const response = await api.post<CreateQuestionResponse>(`/rooms/${roomId}/questions`, data, {
         headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
+          'Authorization': `Bearer ${token}`
+        }
       })
-      if (!response.ok) {
-        throw new Error('Network response was not ok')
-      }
-      const result: CreateQuestionResponse = await response.json()
-      return result
+      return response.data
     },
 
     onMutate({ question }) {
-
       const questions = queryClient.getQueryData<GetRoomQuestionsResponse>(['get-questions', roomId])
 
       const questionsArray = questions ?? []
+
+      const profileData: GetProfileResponse | undefined = queryClient.getQueryData(['get-profile'])
 
       const newQuestion = {
         id: crypto.randomUUID(),
@@ -36,6 +35,11 @@ export function useCreateQuestion(roomId: string) {
         answer: null,
         createdAt: new Date().toISOString(),
         isGeneratingAnswer: true,
+        sender: {
+          id: profileData?.user.id ?? '',
+          name: profileData?.user.name ?? '',
+          email: profileData?.user.email ?? ''
+        },
       }
 
       queryClient.setQueryData<GetRoomQuestionsResponse>(['get-questions', roomId],

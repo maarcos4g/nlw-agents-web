@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import type { CreateRoomRequest } from "./types/create-room-request"
 import type { CreateRoomResponse } from "./types/create-room-response"
-import { env } from "@/env"
 import { getToken } from "@/lib/auth"
+import { api } from "./config/api"
 
 export function useCreateRoom() {
   const { token } = getToken()
@@ -10,19 +10,14 @@ export function useCreateRoom() {
 
   return useMutation({
     mutationFn: async (data: CreateRoomRequest) => {
-      const response = await fetch(`${env.VITE_API_URL}/rooms`, {
-        method: 'POST',
+
+      const response = await api.post<CreateRoomResponse>('/rooms', data, {
         headers: {
-          'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(data),
+        }
       })
-      if (!response.ok) {
-        throw new Error('Network response was not ok')
-      }
-      const result: CreateRoomResponse = await response.json()
-      return result
+
+      return response.data
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['get-rooms'] })
