@@ -3,4 +3,9 @@ export type GetRoomQuestionsResponse = Array<{
   question: string
   answer: string | null
   createdAt: string
+  sender: {
+    id: string
+    name: string
+    email: string
+  }
 }>

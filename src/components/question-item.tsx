@@ -8,6 +8,11 @@ interface Question {
   answer?: string | null
   createdAt: string
   isGeneratingAnswer?: boolean
+  sender: {
+    id: string
+    name: string
+    email: string
+  }
 }
 
 interface QuestionItemProps {
@@ -64,7 +69,7 @@ export function QuestionItem({ question }: QuestionItemProps) {
 
           <div className="flex justify-end">
             <span className="text-muted-foreground text-xs">
-              {dayjs(question.createdAt).toNow()}
+              enviada por {question.sender.name} {dayjs(question.createdAt).toNow()}
             </span>
           </div>
         </div>
