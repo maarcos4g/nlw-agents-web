@@ -2,7 +2,6 @@ import { createBrowserRouter } from "react-router-dom";
 
 import { CreateRoom } from "./pages/create-room";
 import { Room } from "./pages/room";
-import { RecordRoomAudio } from "./pages/record-room-audio";
 import { Auth } from "./pages/sign-in";
 import { AuthLayout } from "./pages/layouts/auth";
 import { SignUp } from "./pages/sign-up";
@@ -23,10 +22,6 @@ export const router = createBrowserRouter([
       {
         path: '/room/:roomCode',
         element: <Room />
-      },
-      {
-        path: '/room/:roomId/audio',
-        element: <RecordRoomAudio />
       },
     ]
   },

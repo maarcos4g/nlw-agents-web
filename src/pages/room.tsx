@@ -1,4 +1,4 @@
-import { AlertTriangle, ArrowLeft, Copy, Radio } from 'lucide-react'
+import { ArrowLeft, Copy, Disc2, Radio } from 'lucide-react'
 import { Link, Navigate, useParams } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { QuestionForm } from '@/components/question-form'
@@ -7,6 +7,9 @@ import { toast } from 'sonner'
 import { useRoom } from '@/http/use-room'
 import { RoomSkeleton } from '@/components/skeletons/room-skeleton'
 import { isRoomOwner } from '@/lib/auth'
+import { useAudioRecorder } from '@/lib/recorder'
+import { env } from '@/env'
+import { Error } from '@/components/error'
 
 type RoomParams = {
   roomCode: string
@@ -29,29 +32,44 @@ export function Room() {
 
   const room = data?.room
 
+  const {
+    isRecording,
+    startRecording,
+    stopRecording,
+  } = useAudioRecorder((audio) => {
+    if (!room) return
+    uploadAudio(audio, room.id)
+  })
+
   if (isLoading) {
     return <RoomSkeleton />
   }
 
   if (isError || !room) {
     return (
-      <div className="container mx-auto max-w-4xl flex flex-col items-center justify-center py-24 gap-6">
-        <div className="flex flex-col items-center gap-2">
-          <AlertTriangle className="size-12 text-destructive" />
-          <h2 className="text-2xl font-bold text-destructive">Sala não encontrada</h2>
-          <p className="text-muted-foreground text-center max-w-md">
-            O código da sala informado não existe ou ocorreu um erro ao buscar os dados.<br />
-            Verifique o código e tente novamente.
-          </p>
-        </div>
-        <Link to="/">
-          <Button variant="outline">Voltar ao início</Button>
-        </Link>
-      </div>
+      <Error
+        title='Sala não encontrada'
+        description='O código da sala informado não existe ou ocorreu um erro ao buscar os dados.<br />
+          Verifique o código e tente novamente.'
+      />
     )
   }
 
   const isOwner = isRoomOwner(room.code)
+
+  async function uploadAudio(audio: Blob, roomId: string) {
+    const formData = new FormData()
+
+    formData.append('file', audio, 'audio.webm')
+
+    const response = await fetch(`${env.VITE_API_URL}/rooms/${roomId}/audio`, {
+      method: 'POST',
+      body: formData,
+    })
+
+    const result = await response.json()
+    console.log(result)
+  }
 
   return (
     <div className="container mx-auto max-w-4xl mb-2">
@@ -73,12 +91,17 @@ export function Room() {
             </button>
 
             {isOwner && (
-              <Link to={`/room/${room?.id}/audio`}>
-                <Button className="flex items-center gap-2" variant="secondary">
+              isRecording ? (
+                <Button onClick={stopRecording} className="flex items-center gap-2" variant="secondary">
+                  <Disc2 className="size-3 text-red-500 animate-ping" />
+                  Gravando...
+                </Button>
+              ) : (
+                <Button onClick={startRecording} className="flex items-center gap-2" variant="secondary">
                   <Radio className="size-4" />
                   Gravar Áudio
                 </Button>
-              </Link>
+              )
             )}
           </div>
         </div>
@@ -95,6 +118,6 @@ export function Room() {
       </div>
 
       <QuestionList roomId={room.id} />
-    </div>
+    </div >
   )
 }
